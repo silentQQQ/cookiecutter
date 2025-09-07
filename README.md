@@ -5,32 +5,39 @@ Using cookiecutter to create a Django project template
 - Create a venv virtual environment
 ```
 python -m venv venv_ck
-pip install cookiecutter
-pip install django
 cd ./venv_ck/Scripts
 activate
+
+pip install cookiecutter
+pip install django
 ```
 
 # Run Cookiecutter
+## Create Project
 ```
 cookiecutter git@github.com:silentQQQ/cookiecutter.git
 ```
+- project name, defalut is myproject
+- Author, default is moomboss
+- Version, default is 1.0.0
+
 
 ## Create App
-Enter the created project, such as myproject
+Enter the project directory, run the following command to create django apps
 ```
-python add_app.py app1_name app2_name ……
-
+python add_app.py app1 app2 app3
 ```
 
-Perform the following operations:
-- Add app_name to INSTALLED_APPS in settings.py
-- Add URLs to the project's urls.py
-- Create apps\app_name directory under the project directory and initialize it
-- The project can be run directly, such as python manage.py runserver
+## Test 
+```
+python manage.py runserver
+```
+access http://127.0.0.1:8000/app1/
+> hello app1
+
 
 # Project Address
-https://github.com/silentQQQ/cookiecutter.git
+https://github.com/silentQQQ/cookiecutter
 
 # Hook Description
 The files in the hooks directory will be automatically executed after project creation to initialize the project, such as creating databases, creating superusers, etc.
