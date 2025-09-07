@@ -1,6 +1,6 @@
 # Project Introduction
-Using cookiecutter to create a Django project template
-Inspired by [cookiecutter](https://github.com/cookiecutter/cookiecutter)
+Using cookiecutter to create a Django project template.   
+Inspired by [cookiecutter](https://github.com/cookiecutter/cookiecutter).
 
 # Prerequisites
 - Create a venv virtual environment
