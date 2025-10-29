@@ -40,4 +40,4 @@ access http://127.0.0.1:8000/app1/
 The files in the hooks directory will be automatically executed after project creation to initialize the project, such as creating databases, creating superusers, etc.
 - pre_gen_project.py: Executed before project creation
 - post_gen_project.py: Executed after project creation
- 
+
