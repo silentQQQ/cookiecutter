@@ -12,6 +12,7 @@ import shutil
 # When running the script, the user inputs the app name as a parameter. If no input is provided, show a prompt
 if len(sys.argv) < 2:
     print("Please input app name")
+    sys.exit(1)
 
 # Copy the demo folder and its files to the apps folder, and modify the folder name
 # argv can read many app names
@@ -32,62 +33,69 @@ for i in range(1, len(sys.argv)):
     readme_file = 'readme.md'
     readme_path = os.path.join(os.getcwd(), readme_file)
     with open(readme_path, 'r',encoding='utf-8') as f:
-
         first_line = f.readline()
         project_name = first_line.split(' ')[1].strip()
 
     # In the project_name folder, get the path to the settings.py file
     settings_path = os.path.join(os.getcwd(), project_name, 'settings.py')
     # Add the app name to the INSTALLED_APPS list, open the file in read/write mode
-    content = ''
-    with open(settings_path, 'r',encoding='utf-8') as f:
-
+    with open(settings_path, 'r', encoding='utf-8') as f:
         content = f.read()
-        # Replace 'apps.demo' with 'apps.app_name'
-        content = content.replace('apps.demo', f"apps.demo',\n\t'apps.{app_name}")
+        # Find the line with "apps.demo" and add the new app after it
+        if "apps.demo" in content:
+            # Split the content by lines
+            lines = content.split('\n')
+            # Find the line with apps.demo
+            for i, line in enumerate(lines):
+                if "apps.demo" in line:
+                    # Add the new app line after the demo line
+                    indent = line[:len(line) - len(line.lstrip())]  # Preserve indentation
+                    lines.insert(i + 1, f'{indent}"apps.{app_name}",')
+                    break
+            # Join the lines back together
+            content = '\n'.join(lines)
 
-    with open(settings_path, 'w',encoding='utf-8') as f:
+    with open(settings_path, 'w', encoding='utf-8') as f:
         f.write(content)
-
 
     # Replace 'apps.demo.urls' with 'apps.app_name.urls'
     urls_path = os.path.join(os.getcwd(), project_name, 'urls.py')
     lines = []
-    with open(urls_path, 'r',encoding='utf-8') as f:
+    with open(urls_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-        # Find the line in lines that contains 'path('apps.demo/', include('apps.demo.urls')),\n'
+        # Find the line in lines that contains 'apps.demo'
         cur_index = 0
-        for index,line in enumerate(lines):
+        for index, line in enumerate(lines):
             if 'apps.demo' in line:
                 cur_index = index
                 break
         # Add a line after cur_index
-        lines.insert(cur_index+1, \
+        lines.insert(cur_index + 1, 
             f"\tpath('{app_name}/', include('apps.{app_name}.urls',namespace='{app_name}')),\n")
 
-    with open(urls_path, 'w',encoding='utf-8') as f:
+    with open(urls_path, 'w', encoding='utf-8') as f:
         f.writelines(lines)
 
     # Replace 'Demo' with app_name, capitalized, and 'demo' with app_name in apps.py
     apps_path = os.path.join(os.getcwd(), 'apps', app_name, 'apps.py')
-    with open(apps_path, 'r',encoding='utf-8') as f:
+    with open(apps_path, 'r', encoding='utf-8') as f:
         content = f.read()
         # Replace 'Demo' with app_name, capitalized
         content = content.replace('Demo', app_name.capitalize())
         # Replace 'demo' with app_name
         content = content.replace('demo', app_name)
-        # Write to file
-        with open(apps_path, 'w',encoding='utf-8') as f:
-            f.write(content)
+    
+    with open(apps_path, 'w', encoding='utf-8') as f:
+        f.write(content)
     
     
     # Replace 'apps.urls'->app_label 'demo' with app_name
-    urls_path = os.path.join(os.getcwd(),'apps',app_name,'urls.py')
-    with open(urls_path, 'r',encoding='utf-8') as f:
+    urls_path = os.path.join(os.getcwd(), 'apps', app_name, 'urls.py')
+    with open(urls_path, 'r', encoding='utf-8') as f:
         content = f.read()
-        content = content.replace('demo',app_name)
+        content = content.replace('demo', app_name)
     
-    with open(urls_path, 'w',encoding='utf-8') as f:
+    with open(urls_path, 'w', encoding='utf-8') as f:
         f.write(content)
 
     print(f"App {app_name} has been added to project {project_name}")
